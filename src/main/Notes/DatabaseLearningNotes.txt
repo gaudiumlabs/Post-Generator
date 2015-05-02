@@ -1,0 +1,4 @@
+
+General:
+  JDBC is the interface for Java to work with database engines
+  	This will allow the same interface to work with MS SQL, mySQL etc.
