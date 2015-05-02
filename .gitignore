@@ -2,5 +2,6 @@
 # Ignoring the lib folder that has all the JAR files, these can be more than 300 mb which wont work on git
 # These jar files are needed for the project and are on the GaudiumLabs google drive
 /lib
-.classpath
-.project
+#Ignoring any classpath and project config files for eclipse
+*.classpath
+*.project
