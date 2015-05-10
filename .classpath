@@ -17,5 +17,6 @@
 	<classpathentry kind="lib" path="lib/stanford-corenlp-3.5.2-models.jar"/>
 	<classpathentry kind="lib" path="lib/stanford-corenlp-3.5.2-sources.jar"/>
 	<classpathentry kind="lib" path="lib/stanford-corenlp-3.5.2.jar"/>
+	<classpathentry kind="lib" path="lib/SQLrelated/mysql-connector-java-5.1.35-bin.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
