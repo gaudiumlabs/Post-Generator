@@ -55,6 +55,9 @@ public class Main {
 
 	public static void main(String[] args) {
 
+		
+		System.out.println("Start of program\n");
+		
 		// MaxentTagger tagger = new
 		// MaxentTagger("taggers/english-bidirectional-distsim.tagger");
 		// MaxentTagger tagger = new MaxentTagger(
@@ -64,6 +67,7 @@ public class Main {
 
 		// Set up wordnet
 		// construct the URL to the Wordnet dictionary directory
+		{/*
 		String wnhome = System.getenv("WNHOME");
 		String path = wnhome + File.separator + "dict";
 		System.out.println("Trying path: " + path);
@@ -152,6 +156,7 @@ public class Main {
 		// }
 
 		System.out.println("---EnD oF PrOgRaM---");
+		*/}
 	}
 
 	/**
