@@ -53,7 +53,7 @@ public class Main {
 		NOUN, VERB, ADJECTIVE, ADVERB, ARTICLE
 	};
 
-	// second comment blah super blah
+	// second comment blah super blah blah the sequel
 	// I'm a boss - Kostas
 	public static void main(String[] args) {
 
