@@ -53,6 +53,7 @@ public class Main {
 		NOUN, VERB, ADJECTIVE, ADVERB, ARTICLE
 	};
 
+	// I'm a boss - Kostas
 	public static void main(String[] args) {
 
 		// MaxentTagger tagger = new
