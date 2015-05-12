@@ -1,7 +1,10 @@
 package main;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -29,155 +32,127 @@ import facebook4j.Post;
 import facebook4j.ResponseList;
 import facebook4j.auth.AccessToken;
 
+/**
+ * Store and retrieve facebook posts in JSON format to/from a text file.
+ * 
+ * NOTE: Currently when posts are written to a file in JSON format, each Post
+ * object is in JSON format but the entire file (i.e. posts.json) is technically
+ * not legal json. To return the file of json Post objects to java classes, the
+ * file is read line by line, where each line is a single Post object.
+ * 
+ * @author dustin
+ *
+ */
 public class SaveJSONFromFB {
 
-	// private static FacebookClient facebookClient = null;
-
-	private static final String accessTokenStr = "CAACEdEose0cBAGRmLtjz3mTIZA5N8VHTRni5PVHEfR7uiQngXufcPhAPrDlIlGN2Jlsy6NrGXrNVNPEDbBNf1nGmZClUElL16ugUZCZBOwm3vA1XEVgscyJnZCEhlUDymy8jjurfgjq9S94VbWH5WQ6L9io2VELvi1OR0uHNyjNHhlEMk4fbkedbxZBN0vbTukDelZAGZCkuI6pJqBbSkquMa7ZBqcZAuXjeAZD";
+	private static final String accessTokenStr = "CAACEdEose0cBAMNEY4ksqE5AhOIcQwpRFH7yZARPFqptdZA1I7r7aOfTnjYOruc8mkyxmv4ZAeNIvbcIt8IWlPvODSNElmZAxBZBJxxZBIUT9mgptAqdcXNnBrO5VyKoDvnbgu96SAksibXZA1RvhsmA6VjWSFAIaCZBG3CL2ob2n5ZCiE8jEVo1SwsG5vD1ZCU0ctPYQxEzbSKwZCBWTf4dna6ZCJQAxiR30DsZD";
 
 	public static void main(String[] args) throws FacebookException {
-		useFacebook4j();
+		// Get facebook object
+		Facebook facebook = new FacebookFactory().getInstance();
+		AccessToken at = new AccessToken(accessTokenStr);
+		facebook.setOAuthAccessToken(at);
+
+		// post searching information
+		GeoLocation loc = new GeoLocation(40.688215, -73.939856);
+		int distance = 49999;
+
+		// run the search
+		ArrayList<Post> coffeePostsFromNYC = getPostsFromSearch(facebook,
+				"coffee", loc, distance);
+
+		// save posts in json format to file
+		String jsonFileName = "data" + File.separator + "posts.json";
+		postsToJSONFile(coffeePostsFromNYC, jsonFileName);
+
+		// read them back in
+		ArrayList<Post> postsFromJSONFile = postsFromJSONFile(new File(
+				jsonFileName));
+
+		// do we get the exact same objects? if not, report an error
+		for (int i = 0; i < coffeePostsFromNYC.size(); i++) {
+			if (!postsFromJSONFile.get(i).equals(coffeePostsFromNYC.get(i))) {
+				System.err.println("==== [Post " + Integer.toString(i)
+						+ " does not match] ==== ");
+				System.err.print("[BEFORE] " + postsFromJSONFile.get(i));
+				System.err.print("[AFTER] " + coffeePostsFromNYC.get(i));
+			}
+		}
 	}
 
-	private static void useFacebook4j() throws FacebookException {
-		Facebook facebook = new FacebookFactory().getInstance();
-		// Use default values for oauth app id.
-		// facebook.setOAuthAppId("", "");// SUPER IMPORTANT
-		// ?? ONLY DONE ONCE ?? WHAT IS IT ASSOCIATED TO ? MY LOGIN?
+	private static ArrayList<Post> getPostsFromSearch(Facebook facebook,
+			String keyword, GeoLocation loc, int dist) throws FacebookException {
+		ArrayList<Post> posts = new ArrayList<Post>();
 
-		// Get an access token from:
-		// https://developers.facebook.com/tools/explorer
-		// Copy and paste it below.
+		// a few safety parameters so we don't download all of facebook
+		int maxPlaceCount = 10;
+		int maxPostCountPerPlace = 5;
 
-		// Create a new data file
-		File dataFile = new File("data");
-		if (!dataFile.exists()) {
-			if (dataFile.mkdir()) {
-				System.out.println("Directory " + dataFile.getAbsolutePath()
-						+ " is created!");
-			} else {
-				System.out.println("Failed to create directory: "
-						+ dataFile.getAbsolutePath());
+		// run search on facebook
+		ResponseList<Place> results = facebook.searchPlaces(keyword, loc, dist);
+
+		// get posts per place
+		int placeCount = 0;
+		for (Place place : results) {
+			ResponseList<Post> feed = facebook.getFeed(place.getId());
+
+			int postCount = 0;
+			for (Post post : feed) {
+				posts.add(post);
+
+				postCount++;
+				if (postCount == maxPostCountPerPlace) {
+					break;
+				}
+			}
+
+			placeCount++;
+			if (placeCount == maxPlaceCount) {
+				break;
 			}
 		}
 
-		File postsDataFile = new File("data/posts.txt");
-		BufferedWriter writer = null;
+		return posts;
+	}
+
+	private static String postToJSONStr(Post post, Gson gson) {
+		return gson.toJson(post);
+	}
+
+	private static void postsToJSONFile(ArrayList<Post> posts,
+			String jsonFileName) {
+		File jsonFile = new File(jsonFileName);
+		Gson gson = new Gson();
 
 		try {
-			writer = new BufferedWriter(new FileWriter(postsDataFile));
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		try {
-			String accessTokenString = "CAACEdEose0cBAON6W8uFZAS1o5QZAsPnofZAJ8xEzsCRgRZAgU9gC0R5LP2f2LGf3WxRZARyBl0k24VucSoyKrPSXOXqIFsEmAm1P16yQ4CTttVpOlZCCXFy1ZAAvHQXFk03TDATka8hqR9A24ZC8cHOjrZAWRnITKtqwX0uF3cmrFvj8I17bwzYbBwa1MYEQDGiVweE3Ec2Fl8laBCXTGpMWbbXLy0UlE6IZD";
-			AccessToken at = new AccessToken(accessTokenString);
-			// Set access token.
-
-			facebook.setOAuthAccessToken(at);
-
-			System.out.println("AccessToken seems to be valid");
-
-			// Search by name
-			// ResponseList<Place> results = facebook.searchPlaces("coffee");
-
-			// You can narrow your search to a specific location and distance
-			// new york city
-			GeoLocation center = new GeoLocation(40.688215, -73.939856);
-			int distance = 49999;
-
-			String searchTerm = "coffee";
-			ResponseList<Place> results = facebook.searchPlaces(searchTerm,
-					center, distance);
-
-			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-			Date date = new Date();
-			String dateTimeStr = dateFormat.format(date);
-			writer.append("==== Search: " + searchTerm + " on " + dateTimeStr
-					+ "   ====\n");
-
-			int count = 0;
-			for (Place place : results) {
-
-				
-				
-				writer.append("[PLACE] " + place.getName() + "\n");
-
-				// appendNewLineToFile(place.getName(),
-				// "FacebookSearchResults.txt");
-				count++;
-
-				ResponseList<Post> feed = facebook.getFeed(place.getId());
-				int postCount = 0;
-				for (Post post : feed) {
-					// System.out.println("\t[POST] " + post.getMessage());
-					
-					if (post.getMessage() != null && !post.getMessage().toString().contains("null")) {
-						writer.append("\t[POST] " + post.getMessage() + "\n");
-						// appendNewLineToFile(post.getMessage(),
-						// "FacebookSearchResults.txt");
-						// appendNewLineToFile("=========END OF POST.",
-						// "FacebookSearchResults.txt");
-						postCount++;
-						if (postCount == 1000) {
-							break;
-						}
-					}
-				}
-				if (count == 1000)
-					break;
-			}// end for loop through the places
-
-			writer.flush();
-		} catch (FacebookException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			BufferedWriter jsonFileWriter = new BufferedWriter(new FileWriter(
+					jsonFile));
+			for (Post post : posts) {
+				jsonFileWriter.append(postToJSONStr(post, gson) + "\n");
+			}
+			jsonFileWriter.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	// public static void useRestFB() {
-	// facebookClient = new DefaultFacebookClient(accessToken);
-	//
-	// fetchObjects();
-	//
-	// }
-	//
-	// static void fetchObjects() throws FacebookException {
-	// System.out.println("* Fetching multiple objects at once *");
-	//
-	// FetchObjectsResults fetchObjectsResults = facebookClient.fetchObjects(
-	// Arrays.asList("me", "cocacola"), FetchObjectsResults.class);
-	//
-	// System.out.println("User name: " + fetchObjectsResults.me.getName());
-	// System.out.println("Page fan count: "
-	// + fetchObjectsResults.page.getLikes());
-	// }
-	//
-	// /**
-	// * Holds results from a "fetchObjects" call.
-	// */
-	// public static class FetchObjectsResults {
-	// @Facebook
-	// User me;
-	//
-	// @Facebook(value = "cocacola")
-	// Page page;
-	// }
-
-	// }
-	
-	private static void getPostJSONStr(Post post, File jsonFile) {
-		Gson gson = new Gson();
-		String json = gson.toJson(post);
-	}
-	
-	private static ArrayList<Post> getPostsFromJSONFile(File jsonFile) {
+	private static ArrayList<Post> postsFromJSONFile(File jsonFile) {
 		ArrayList<Post> posts = new ArrayList<Post>();
+		Gson gson = new Gson();
+		
+		try (BufferedReader br = new BufferedReader(new FileReader(jsonFile))) {
+		    String line;
+		    while ((line = br.readLine()) != null) {
+		    	posts.add(gson.fromJson(line, Post.class));
+		    }
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		return posts;
 	}
