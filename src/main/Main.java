@@ -1,14 +1,18 @@
 package main;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
 
-import mysql.access.MySQLAccess;
 import edu.mit.jwi.Dictionary;
 import edu.mit.jwi.IDictionary;
 import edu.mit.jwi.item.IIndexWord;
@@ -16,12 +20,24 @@ import edu.mit.jwi.item.ISynset;
 import edu.mit.jwi.item.IWord;
 import edu.mit.jwi.item.IWordID;
 import edu.mit.jwi.item.POS;
+import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import edu.stanford.nlp.semgraph.SemanticGraph;
+import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation;
+//import edu.stanford.nlp.tagger.maxent.MaxentTagger;
+import edu.stanford.nlp.trees.Tree;
+import edu.stanford.nlp.trees.TreeCoreAnnotations.TreeAnnotation;
+import edu.stanford.nlp.util.CoreMap;
+import edu.stanford.nlp.dcoref.CorefChain;
+import edu.stanford.nlp.dcoref.CorefCoreAnnotations.CorefChainAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.NamedEntityTagAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.util.CoreMap;
-//import edu.stanford.nlp.tagger.maxent.MaxentTagger;
+import edu.stanford.nlp.ling.Sentence;
+import edu.stanford.nlp.ling.TaggedWord;
 
 /**
  * Class to practice using the wordnet api
@@ -39,9 +55,6 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		
-		System.out.println("Start of program\n");
-		
 		// MaxentTagger tagger = new
 		// MaxentTagger("taggers/english-bidirectional-distsim.tagger");
 		// MaxentTagger tagger = new MaxentTagger(
@@ -51,7 +64,6 @@ public class Main {
 
 		// Set up wordnet
 		// construct the URL to the Wordnet dictionary directory
-		{/*
 		String wnhome = System.getenv("WNHOME");
 		String path = wnhome + File.separator + "dict";
 		System.out.println("Trying path: " + path);
@@ -139,17 +151,9 @@ public class Main {
 		// System.out.println("[New Sentence]     " + sim);
 		// }
 
-		System.out.println("---EnD oF PrOgRaM---");		
-		 */
-			
-			//FOLLOW THE TUTORIAL AT http://www.vogella.com/tutorials/MySQLJava/article.html"
-			System.out.println("SQL testing, if your mySQL database is setup, this should"
-					+ "return a valid sql response. If not, you will get a sql error\n"
-					+ " Edit the test Sql function to play with it");
-			testSqlAccess();//dummy test function that should be removed later
-		}
+		System.out.println("---EnD oF PrOgRaM---");
 	}
- 
+
 	/**
 	 * Given a sentence, this class will return similar sentences, where each
 	 * sentence is the same except 1 adjective will be replaced with a synonym
@@ -291,25 +295,5 @@ public class Main {
 
 		return WORDTYPE.ADJECTIVE;
 	}
-	
-	
-	/**
-	 * Dummy function to test the sql access class
-	 * Should not be there when the actual code prototype exists
-	 * @author - Ram
-	 * @deprecated
-	 * 
-	 */
-	private static void testSqlAccess(){
-		
-		MySQLAccess sqlAccessor = new MySQLAccess();
-		try{
-			sqlAccessor.readDataBase();
-		}
-		catch (Exception E){
-			System.out.println("SQL exception happened" + E);
-		}
-		
-	}//end function testSqlAccess
 
 }
