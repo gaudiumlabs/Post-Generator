@@ -22,6 +22,8 @@ public class MySQLAccess {
 	private ResultSet resultSet = null;
 
 
+	//this simple function does all the work
+	
 	@SuppressWarnings("deprecation")
 	public void readDataBase() throws Exception {
 		try {
