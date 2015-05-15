@@ -1,3 +1,4 @@
+
 package main;
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +13,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
+
+import mysql.access.MySQLAccess;
 
 import edu.mit.jwi.Dictionary;
 import edu.mit.jwi.IDictionary;
@@ -154,7 +157,33 @@ public class Main {
 		// }
 
 		System.out.println("---EnD oF PrOgRaM---");
+		
+		//FOLLOW THE TUTORIAL AT http://www.vogella.com/tutorials/MySQLJava/article.html"
+		System.out.println("SQL testing, if your mySQL database is setup, this should"
+				+ "return a valid sql response. If not, you will get a sql error\n"
+				+ " Edit the test Sql function to play with it");
+		testSqlAccess();//dummy test function that should be removed later
 	}
+	
+	
+	/**
+	 * Dummy function to test the sql access class
+	 * Should not be there when the actual code prototype exists
+	 * @author - Ram
+	 * @deprecated
+	 * 
+	 */
+	private static void testSqlAccess(){
+		
+		MySQLAccess sqlAccessor = new MySQLAccess();
+		try{
+			sqlAccessor.readDataBase();
+		}
+		catch (Exception E){
+			System.out.println("SQL exception happened" + E);
+		}
+		
+	}//end function testSqlAccess
 
 	/**
 	 * Given a sentence, this class will return similar sentences, where each
@@ -297,5 +326,4 @@ public class Main {
 
 		return WORDTYPE.ADJECTIVE;
 	}
-
 }
