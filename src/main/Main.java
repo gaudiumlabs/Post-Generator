@@ -157,6 +157,7 @@ public class Main {
 		System.out.println("---EnD oF PrOgRaM---");
 		
 		//FOLLOW THE TUTORIAL AT http://www.vogella.com/tutorials/MySQLJava/article.html"
+		// AND http://www.vogella.com/tutorials/MySQL/article.html
 		//READ "DatabaseLearning.txt notes under main.Notes package.
 		System.out.println("SQL testing, if your mySQL database is setup, this should"
 				+ "return a valid sql response. If not, you will get a sql error\n"
