@@ -23,6 +23,13 @@ import java.util.Arrays;
 
 import java.util.Date;
 
+import json.FBPost;
+
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import sun.security.action.GetLongAction;
+
 import com.google.gson.Gson;
 
 import facebook4j.Facebook;
@@ -47,7 +54,7 @@ import facebook4j.auth.AccessToken;
  */
 public class SaveJSONFromFB {
 
-	private static final String accessTokenStr = "CAACEdEose0cBAMNEY4ksqE5AhOIcQwpRFH7yZARPFqptdZA1I7r7aOfTnjYOruc8mkyxmv4ZAeNIvbcIt8IWlPvODSNElmZAxBZBJxxZBIUT9mgptAqdcXNnBrO5VyKoDvnbgu96SAksibXZA1RvhsmA6VjWSFAIaCZBG3CL2ob2n5ZCiE8jEVo1SwsG5vD1ZCU0ctPYQxEzbSKwZCBWTf4dna6ZCJQAxiR30DsZD";
+	private static final String accessTokenStr = "CAACEdEose0cBAIkpm1pKqHkSPQzGGns9obFJRLUZA2R5ffdfPY0r1G4VfhtVrVSNWnhjohhrMo9jly206KvfgAadDlxxNvUzdwPcN8ZBNn53966F4qYf4gHpnHAlMY3ZAWxY7k3iDfe6xq1WGYNZAZBL2ZBCvxqn5ZAk2ipgxgIcZAkkIZAZB87Xq06w7bXoSGtyH1iYexbAubaY0AkYXZADCoQlkjgApPl4yQZD";
 
 	public static void main(String[] args) throws FacebookException {
 		// Get facebook object
@@ -60,15 +67,15 @@ public class SaveJSONFromFB {
 		int distance = 49999;
 
 		// run the search
-		ArrayList<Post> coffeePostsFromNYC = getPostsFromSearch(facebook,
+		ArrayList<FBPost> coffeePostsFromNYC = getPostsFromSearch(facebook,
 				"coffee", loc, distance);
-
+		
 		// save posts in json format to file
 		String jsonFileName = "data" + File.separator + "posts.json";
 		postsToJSONFile(coffeePostsFromNYC, jsonFileName);
 
 		// read them back in
-		ArrayList<Post> postsFromJSONFile = postsFromJSONFile(new File(
+		ArrayList<FBPost> postsFromJSONFile = postsFromJSONFile(new File(
 				jsonFileName));
 
 		// do we get the exact same objects? if not, report an error
@@ -82,9 +89,9 @@ public class SaveJSONFromFB {
 		}
 	}
 
-	private static ArrayList<Post> getPostsFromSearch(Facebook facebook,
+	private static ArrayList<FBPost> getPostsFromSearch(Facebook facebook,
 			String keyword, GeoLocation loc, int dist) throws FacebookException {
-		ArrayList<Post> posts = new ArrayList<Post>();
+		ArrayList<FBPost> posts = new ArrayList<FBPost>();
 
 		// a few safety parameters so we don't download all of facebook
 		int maxPlaceCount = 10;
@@ -100,7 +107,7 @@ public class SaveJSONFromFB {
 
 			int postCount = 0;
 			for (Post post : feed) {
-				posts.add(post);
+				posts.add(new FBPost(post.getMessage(), post.getLikes().size()));
 
 				postCount++;
 				if (postCount == maxPostCountPerPlace) {
@@ -117,20 +124,32 @@ public class SaveJSONFromFB {
 		return posts;
 	}
 
-	private static String postToJSONStr(Post post, ObjectMapper mapper) {
-		return gson.toJson(post);
+	private static String postToJSONStr(FBPost post, ObjectMapper mapper) {
+		String result = "";
+		try {
+			result = mapper.writeValueAsString(post);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
 	}
 
-	private static void postsToJSONFile(ArrayList<Post> posts,
+	private static void postsToJSONFile(ArrayList<FBPost> posts,
 			String jsonFileName) {
 		File jsonFile = new File(jsonFileName);
-		Gson gson = new Gson();
-
+		
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.enableDefaultTyping();
+		
 		try {
 			BufferedWriter jsonFileWriter = new BufferedWriter(new FileWriter(
 					jsonFile));
-			for (Post post : posts) {
-				jsonFileWriter.append(postToJSONStr(post, gson) + "\n");
+			for (FBPost post : posts) {
+				jsonFileWriter.append(postToJSONStr(post, mapper) + "\n");
 			}
 			jsonFileWriter.close();
 		} catch (IOException e) {
@@ -139,14 +158,14 @@ public class SaveJSONFromFB {
 		}
 	}
 
-	private static ArrayList<Post> postsFromJSONFile(File jsonFile) {
-		ArrayList<Post> posts = new ArrayList<Post>();
-		Gson gson = new Gson();
+	private static ArrayList<FBPost> postsFromJSONFile(File jsonFile) {
+		ArrayList<FBPost> posts = new ArrayList<FBPost>();
+		ObjectMapper mapper = new ObjectMapper();
 		
 		try (BufferedReader br = new BufferedReader(new FileReader(jsonFile))) {
 		    String line;
 		    while ((line = br.readLine()) != null) {
-		    	posts.add(gson.fromJson(line, Post.class));
+		    	posts.add(mapper.readValue(line, FBPost.class));
 		    }
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
