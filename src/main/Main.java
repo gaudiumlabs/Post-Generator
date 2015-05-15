@@ -156,6 +156,8 @@ public class Main {
 
 		System.out.println("---EnD oF PrOgRaM---");
 		
+		System.out.println("==================SQL TESTIN TIME============");
+		
 		//FOLLOW THE TUTORIAL AT http://www.vogella.com/tutorials/MySQLJava/article.html"
 		// AND http://www.vogella.com/tutorials/MySQL/article.html
 		//READ "DatabaseLearning.txt notes under main.Notes package.
@@ -180,7 +182,7 @@ public class Main {
 			sqlAccessor.readDataBase();
 		}
 		catch (Exception E){
-			System.out.println("SQL exception happened" + E);
+			System.out.println("SQL exception happened " + E);
 		}
 		
 	}//end function testSqlAccess

@@ -31,12 +31,32 @@ public class MySQLAccess {
 			Class.forName("com.mysql.jdbc.Driver");
 			// Setup the connection with the DB
 			connect = DriverManager
-					.getConnection("jdbc:mysql://localhost/feedback?"
+					.getConnection("jdbc:mysql://localhost?"
 							+ "user=root&password=Happymoney10");
 
 			// Statements allow to issue SQL queries to the database
 			statement = connect.createStatement();
-			// Result set get the result of the SQL query
+			
+			//Result set get the result of the SQL query
+			
+			int resultInt = statement										
+					.executeUpdate("DROP DATABASE feedback");
+			
+			System.out.println("--- A---");
+			
+			 resultInt = statement										
+					.executeUpdate("CREATE DATABASE feedback");
+			
+			System.out.println(resultInt);
+			
+			System.out.println("---B---");
+			
+			resultSet = statement
+					.executeQuery("use feedback");
+			writeResultSet(resultSet);
+			
+			System.out.println("---C---");
+			
 			resultSet = statement
 					.executeQuery("select * from feedback.comments");
 			writeResultSet(resultSet);
@@ -68,6 +88,10 @@ public class MySQLAccess {
 			resultSet = statement
 					.executeQuery("select * from feedback.comments");
 			writeMetaData(resultSet);
+			
+			resultSet = statement
+					.executeQuery("drop database feedback");
+			writeResultSet(resultSet);
 
 		} catch (Exception e) {
 			throw e;
