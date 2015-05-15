@@ -25,6 +25,7 @@ MySQL workbench. This is a great way to see the tables , schema and data.
 AND...... you're done. Tadaaa!
 
 	
+====================================================================
 Alternative Local DB option SQLite
 http://www.tutorialspoint.com/sqlite/sqlite_java.htm
 
