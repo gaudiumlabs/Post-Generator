@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+
 //import com.restfb.DefaultFacebookClient;
 //import com.restfb.Facebook;
 //import com.restfb.FacebookClient;
@@ -115,7 +116,7 @@ public class SaveJSONFromFB {
 		return posts;
 	}
 
-	private static String postToJSONStr(Post post, Gson gson) {
+	private static String postToJSONStr(Post post, ObjectMapper mapper) {
 		return gson.toJson(post);
 	}
 
