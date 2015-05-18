@@ -54,7 +54,7 @@ import facebook4j.auth.AccessToken;
  */
 public class SaveJSONFromFB {
 
-	private static final String accessTokenStr = "CAACEdEose0cBAIkpm1pKqHkSPQzGGns9obFJRLUZA2R5ffdfPY0r1G4VfhtVrVSNWnhjohhrMo9jly206KvfgAadDlxxNvUzdwPcN8ZBNn53966F4qYf4gHpnHAlMY3ZAWxY7k3iDfe6xq1WGYNZAZBL2ZBCvxqn5ZAk2ipgxgIcZAkkIZAZB87Xq06w7bXoSGtyH1iYexbAubaY0AkYXZADCoQlkjgApPl4yQZD";
+	private static final String accessTokenStr = "CAACEdEose0cBAOnX9OyqfQtspn2A2GZCDc1AraQizbXkHLLPNZAhf89mdmJf75amdc8odZBmXgfiH1N0bVnM4h7nabG4ZAWE3sh7K9F6tTZAITnDk7ZAUIUsoK2XCt0kdt5KXvJm6udMpB2jM1pZBeghErnviNAJTX4WsG1IpZBCaPJ4AYeTdqb6ZBpDxGZB9TZCHJ7aLkcxA2ng2BOTqwqSmz6osPJXOoF3E4ZD";
 
 	public static void main(String[] args) throws FacebookException {
 		// Get facebook object
@@ -87,6 +87,8 @@ public class SaveJSONFromFB {
 				System.err.print("[AFTER] " + coffeePostsFromNYC.get(i));
 			}
 		}
+		
+		System.out.println("++++ End of Program ++++");
 	}
 
 	private static ArrayList<FBPost> getPostsFromSearch(Facebook facebook,
@@ -94,8 +96,8 @@ public class SaveJSONFromFB {
 		ArrayList<FBPost> posts = new ArrayList<FBPost>();
 
 		// a few safety parameters so we don't download all of facebook
-		int maxPlaceCount = 10;
-		int maxPostCountPerPlace = 5;
+		int maxPlaceCount = 1000;
+		int maxPostCountPerPlace = 500;
 
 		// run search on facebook
 		ResponseList<Place> results = facebook.searchPlaces(keyword, loc, dist);
