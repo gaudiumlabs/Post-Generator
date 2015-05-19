@@ -52,7 +52,7 @@ import facebook4j.auth.AccessToken;
  * @author dustin
  *
  */
-public class SaveJSONFromFB {
+public class FBSearch {
 
 	private static final String accessTokenStr = "CAACEdEose0cBAOnX9OyqfQtspn2A2GZCDc1AraQizbXkHLLPNZAhf89mdmJf75amdc8odZBmXgfiH1N0bVnM4h7nabG4ZAWE3sh7K9F6tTZAITnDk7ZAUIUsoK2XCt0kdt5KXvJm6udMpB2jM1pZBeghErnviNAJTX4WsG1IpZBCaPJ4AYeTdqb6ZBpDxGZB9TZCHJ7aLkcxA2ng2BOTqwqSmz6osPJXOoF3E4ZD";
 
