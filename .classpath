@@ -26,5 +26,6 @@
 	<classpathentry kind="lib" path="lib/jackson-databind-2.5.3.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-core-lgpl-1.9.13.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-mapper-lgpl-1.9.13.jar"/>
+	<classpathentry kind="lib" path="lib/SQLrelated/mysql-connector-java-5.1.35-bin.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
