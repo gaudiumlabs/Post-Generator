@@ -27,7 +27,8 @@ public class TestJokeGen
         
         // Initialize the profile manager and create a new profile
         ProfileManager.initialize();
-        ProfileManager.createUser("username",myBackend);
+        // TODO if this is the first time, uncomment the following line
+        //ProfileManager.createUser("username",myBackend);
         ProfileManager.useProfile("username",myBackend);
         
         // Generate a 'new' joke
