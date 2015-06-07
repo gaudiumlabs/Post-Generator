@@ -3,7 +3,7 @@
  */
 package mysql.access.test;
 
-import static org.junit.Assert.*;
+import mysql.access.MySQLAccess;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -47,7 +47,13 @@ public class MySqlAccessTest {
 
 	@Test
 	public void test() {
-		
+		MySQLAccess sqlAccessor = new MySQLAccess();
+		try{
+			sqlAccessor.readDataBase();
+		}
+		catch (Exception E){
+			System.out.println("SQL exception happened " + E);			
+		}
 		//fail("Not yet implemented");
 	}
 
