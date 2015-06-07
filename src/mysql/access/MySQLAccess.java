@@ -21,7 +21,6 @@ public class MySQLAccess {
 	private PreparedStatement preparedStatement = null;
 	private ResultSet resultSet = null;
 
-
 	//this simple function does all the work
 	
 	@SuppressWarnings("deprecation")
@@ -32,34 +31,51 @@ public class MySQLAccess {
 			// Setup the connection with the DB
 			connect = DriverManager
 					.getConnection("jdbc:mysql://localhost?"
-							+ "user=root&password=Happymoney10");
+							+ "user=gaudium&password=Happymoney10");
 
 			// Statements allow to issue SQL queries to the database
 			statement = connect.createStatement();
 			
 			//Result set get the result of the SQL query
-			
-			int resultInt = statement										
-					.executeUpdate("DROP DATABASE feedback");
-			
-			System.out.println("--- A---");
-			
+			int resultInt = 0;
+			try{
+				resultInt = statement.executeUpdate("DROP DATABASE feedback");
+			}
+			catch(Exception e){
+				System.out.println(e);
+			}
+									
 			 resultInt = statement										
-					.executeUpdate("CREATE DATABASE feedback");
-			
+					.executeUpdate("CREATE DATABASE feedback");			
 			System.out.println(resultInt);
-			
-			System.out.println("---B---");
-			
+									
 			resultSet = statement
 					.executeQuery("use feedback");
-			writeResultSet(resultSet);
+			//writeResultSet(resultSet);
 			
-			System.out.println("---C---");
+			String createTableStatement = new String("CREATE TABLE comments (id INT NOT NULL AUTO_INCREMENT," 
+					+"MYUSER VARCHAR(30) NOT NULL,"
+					+"EMAIL VARCHAR(30)," 
+					+"WEBPAGE VARCHAR(100) NOT NULL," 
+					+"DATUM DATE NOT NULL," 
+					+"SUMMARY VARCHAR(40) NOT NULL,"
+					+"COMMENTS VARCHAR(400) NOT NULL,"
+					+"PRIMARY KEY (ID));");
+	
+			preparedStatement = connect.prepareStatement(createTableStatement);
+						
+			System.out.println(preparedStatement.toString());
+			preparedStatement.executeUpdate();
+			
+			String createFirstEntry = new String("INSERT INTO comments values (default, 'lars', 'myemail@gmail.com','http://www.vogella.com', '2009-09-14 10:33:11', 'Summary','My first comment');");
+			preparedStatement = connect.prepareStatement(createFirstEntry);
+			preparedStatement.executeUpdate();
+			
 			
 			resultSet = statement
 					.executeQuery("select * from feedback.comments");
-			writeResultSet(resultSet);
+						
+			writeResultSet(resultSet);			
 
 			// PreparedStatements can use variables and are more efficient
 			preparedStatement = connect
@@ -73,12 +89,13 @@ public class MySQLAccess {
 			preparedStatement.setString(5, "TestSummary");
 			preparedStatement.setString(6, "TestComment");
 			preparedStatement.executeUpdate();
+			
 
 			preparedStatement = connect
 					.prepareStatement("SELECT myuser, webpage, datum, summary, COMMENTS from feedback.comments");
 			resultSet = preparedStatement.executeQuery();
-			writeResultSet(resultSet);
-
+			writeResultSet(resultSet);			
+			
 			// Remove again the insert comment
 			preparedStatement = connect
 					.prepareStatement("delete from feedback.comments where myuser= ? ; ");
@@ -88,11 +105,9 @@ public class MySQLAccess {
 			resultSet = statement
 					.executeQuery("select * from feedback.comments");
 			writeMetaData(resultSet);
-			
-			resultSet = statement
-					.executeQuery("drop database feedback");
-			writeResultSet(resultSet);
-
+						
+			statement.executeUpdate("drop database feedback");
+			 			 			
 		} catch (Exception e) {
 			throw e;
 		} finally {
