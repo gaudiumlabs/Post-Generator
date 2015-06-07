@@ -115,6 +115,12 @@ public class MySQLAccess {
 		}
 
 	}
+	/**
+	 * @category Sql class
+	 * @description writeMetaData Function 
+	 * @param resultSet
+	 * @throws SQLException
+	 */
 	private void writeMetaData(ResultSet resultSet) throws SQLException {
 		//   Now get some metadata from the database
 		// Result set get the result of the SQL query
