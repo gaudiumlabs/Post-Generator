@@ -1,13 +1,21 @@
 package json;
 
+import java.util.Date;
+
 public class FBPost {
 
 	private String message;
 	private int likeCount;
+	private int shareCount;
+	private String source;
+	private Date date;
 
 	public FBPost() {
 		this.message = "";
 		this.likeCount = -1;
+		this.setShareCount(-1);
+		this.setSource("");
+		this.setDate(null);
 	}
 
 	public FBPost(String message) {
@@ -43,5 +51,29 @@ public class FBPost {
 			return this.message.equals(post.getMessage())
 					&& this.likeCount == post.getLikeCount();
 		}
+	}
+
+	public int getShareCount() {
+		return shareCount;
+	}
+
+	public void setShareCount(int shareCount) {
+		this.shareCount = shareCount;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 }

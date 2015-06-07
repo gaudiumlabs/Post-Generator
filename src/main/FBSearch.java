@@ -109,8 +109,16 @@ public class FBSearch {
 
 			int postCount = 0;
 			for (Post post : feed) {
-				posts.add(new FBPost(post.getMessage(), post.getLikes().size()));
-
+				FBPost localPost = new FBPost(); 
+				
+				localPost.setMessage(post.getMessage());
+				localPost.setLikeCount(post.getLikes().size());
+				localPost.setShareCount(post.getSharesCount());
+				localPost.setDate(post.getCreatedTime());
+				localPost.setSource(post.getName());
+				
+				posts.add(localPost);
+				
 				postCount++;
 				if (postCount == maxPostCountPerPlace) {
 					break;
