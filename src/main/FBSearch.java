@@ -114,7 +114,7 @@ public class FBSearch {
 				localPost.setMessage(post.getMessage());
 				localPost.setLikeCount(post.getLikes().size());
 				localPost.setShareCount(post.getSharesCount());
-				localPost.setDate(post.getCreatedTime());
+				//localPost.setDate(post.getCreatedTime());
 				localPost.setSource(post.getName());
 				
 				posts.add(localPost);

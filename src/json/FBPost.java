@@ -4,18 +4,17 @@ import java.util.Date;
 
 public class FBPost {
 
+	private Long id;
 	private String message;
 	private int likeCount;
 	private int shareCount;
 	private String source;
-	private Date date;
 
 	public FBPost() {
 		this.message = "";
 		this.likeCount = -1;
 		this.setShareCount(-1);
 		this.setSource("");
-		this.setDate(null);
 	}
 
 	public FBPost(String message) {
@@ -28,6 +27,7 @@ public class FBPost {
 		this.likeCount = likes;
 	}
 
+	
 	public String getMessage() {
 		return message;
 	}
@@ -69,11 +69,12 @@ public class FBPost {
 		this.source = source;
 	}
 
-	public Date getDate() {
-		return date;
+
+	public Long getId() {
+		return id;
 	}
 
-	public void setDate(Date date) {
-		this.date = date;
+	public void setId(Long id) {
+		this.id = id;
 	}
 }
