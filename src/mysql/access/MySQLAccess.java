@@ -159,16 +159,13 @@ public class MySQLAccess {
 			if (resultSet != null) {
 				resultSet.close();
 			}
-
 			if (statement != null) {
 				statement.close();
 			}
-
 			if (connect != null) {
 				connect.close();
 			}
 		} catch (Exception e) {
-
 		}
-	}
+	}//end of function close()
 }
