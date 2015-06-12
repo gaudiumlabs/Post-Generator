@@ -1,37 +1,32 @@
-<!DOCTYPE hibernate-configuration PUBLIC
-"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD//EN"
 "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
  
 <hibernate-configuration>
-    <session-factory>
+<session-factory>
+<!-- Database connection settings -->
+<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+<property name="connection.url">jdbc:mysql://localhost/testdb</property>
+<property name="connection.username">gaudium</property>
+<property name="connection.password">Happymoney10</property>
  
- 		
- 		
-        <!-- hibernate dialect -->
-        <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+<!-- JDBC connection pool (use the built-in) -->
+<property name="connection.pool_size">1</property>
  
+<!-- SQL dialect -->
+<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
  
-        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost/testdb</property>
-        <property name="hibernate.connection.username">gaudium</property>
-        <property name="hibernate.connection.password">Happymoney10</property>
-        <property name="transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
+<!-- Enable Hibernate's automatic session context management -->
+<property name="current_session_context_class">thread</property>
  
-        <!-- Automatic schema creation (begin) === -->
-        <property name="hbm2ddl.auto">create</property>
+<!-- Disable the second-level cache  -->
+<property name="cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property>
  
+<!-- Echo all executed SQL to stdout -->
+<property name="show_sql">true</property>
  
-        <!-- Simple memory-only cache -->
-        <property name="hibernate.cache.provider_class">org.hibernate.cache.HashtableCacheProvider</property>
- 
-        <!-- Enable Hibernate's automatic session context management -->
-        <property name="current_session_context_class">thread</property>
- 
-        <!-- ############################################ -->
-        <!-- # mapping files with external dependencies # -->
-        <!-- ############################################ -->
- 
-        <mapping resource="json/FBPost.hbm.xml" />
- 
-    </session-factory>
+<!-- Drop and re-create the database schema on startup -->
+<property name="hbm2ddl.auto">update</property>
+<mapping resource="Employee.hbm.xml"/>
+</session-factory>
 </hibernate-configuration>

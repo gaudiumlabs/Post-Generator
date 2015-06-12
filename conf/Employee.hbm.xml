@@ -1,0 +1,17 @@
+<?xml version="1.0"?><!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ 
+<hibernate-mapping package="test.hibernate">
+<class name="test.Employee" table="EMPLOYEE">
+<id name="id" type="long" column="ID" length="20">
+<generator class="assigned"/>
+</id>
+<property name="firstName" column="FIRSTNAME" type="string" length="20">
+</property>
+<property name="lastName" column="LASTNAME" type="string" length="20">
+</property>
+<property name="email" column="EMAIL" type="string" length="50">
+</property>
+</class>
+</hibernate-mapping>
