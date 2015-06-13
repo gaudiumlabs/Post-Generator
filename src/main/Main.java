@@ -21,14 +21,7 @@ public class Main {
 		//this will run the core test suite for components like the sql database
 		if (initializeAndCoreTest() == false){
 			System.out.println("main ended as the initialization tests failed");	
-		}
-		
-		
-
-		//FOLLOW THE TUTORIAL AT http://www.vogella.com/tutorials/MySQLJava/article.html"
-		// AND http://www.vogella.com/tutorials/MySQL/article.html
-		//READ "DatabaseLearning.txt notes under main.Notes package.
-		
+		}		
 		
 	}
 
