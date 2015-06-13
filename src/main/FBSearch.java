@@ -29,6 +29,7 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import sun.security.action.GetLongAction;
+import test.TestPostHibernate;
 
 import com.google.gson.Gson;
 
@@ -54,7 +55,7 @@ import facebook4j.auth.AccessToken;
  */
 public class FBSearch {
 
-	private static final String accessTokenStr = "CAACEdEose0cBAOnX9OyqfQtspn2A2GZCDc1AraQizbXkHLLPNZAhf89mdmJf75amdc8odZBmXgfiH1N0bVnM4h7nabG4ZAWE3sh7K9F6tTZAITnDk7ZAUIUsoK2XCt0kdt5KXvJm6udMpB2jM1pZBeghErnviNAJTX4WsG1IpZBCaPJ4AYeTdqb6ZBpDxGZB9TZCHJ7aLkcxA2ng2BOTqwqSmz6osPJXOoF3E4ZD";
+	private static final String accessTokenStr = "CAACEdEose0cBADFDnw9OhWju8eenj7naXQYuC1PqrTKYmAD0MJiGhXvUzP297Tg0hxewpgpIN5kHRMjdGWUOf2iViHZB2XY9gaU1kI6UuKjmaBKveu5BVPFrGB27iBxHIGoFw7GTtqttO1ytPZBSjFvWiuAr6ZBayv3TGxOmIjfsowbFYi7OWKKflo46xQoNyF4dNih9n0RxVHGkpM6ErZBJXy6wu0wZD";
 
 	public static void main(String[] args) throws FacebookException {
 		// Get facebook object
@@ -69,25 +70,41 @@ public class FBSearch {
 		// run the search
 		ArrayList<FBPost> coffeePostsFromNYC = getPostsFromSearch(facebook,
 				"coffee", loc, distance);
-		
-		// save posts in json format to file
-		String jsonFileName = "data" + File.separator + "posts.json";
-		postsToJSONFile(coffeePostsFromNYC, jsonFileName);
 
-		// read them back in
-		ArrayList<FBPost> postsFromJSONFile = postsFromJSONFile(new File(
-				jsonFileName));
-
-		// do we get the exact same objects? if not, report an error
-		for (int i = 0; i < coffeePostsFromNYC.size(); i++) {
-			if (!postsFromJSONFile.get(i).equals(coffeePostsFromNYC.get(i))) {
-				System.err.println("==== [Post " + Integer.toString(i)
-						+ " does not match] ==== ");
-				System.err.print("[BEFORE] " + postsFromJSONFile.get(i));
-				System.err.print("[AFTER] " + coffeePostsFromNYC.get(i));
+		// filter any posts that don't have messages
+		ArrayList<FBPost> nullPostsToRemove = new ArrayList<FBPost>();
+		for (FBPost post : coffeePostsFromNYC) {
+			if (post.getMessage() == null) {
+				nullPostsToRemove.add(post);
 			}
 		}
-		
+
+		for (FBPost post : nullPostsToRemove) {
+			coffeePostsFromNYC.remove(post);
+			System.out.println("Removed post");
+		}
+
+		// add them to the database
+		TestPostHibernate.savePostsToDatabase(coffeePostsFromNYC);
+
+		// save posts in json format to file
+		// String jsonFileName = "data" + File.separator + "posts.json";
+		// postsToJSONFile(coffeePostsFromNYC, jsonFileName);
+		//
+		// // read them back in
+		// ArrayList<FBPost> postsFromJSONFile = postsFromJSONFile(new File(
+		// jsonFileName));
+		//
+		// // do we get the exact same objects? if not, report an error
+		// for (int i = 0; i < coffeePostsFromNYC.size(); i++) {
+		// if (!postsFromJSONFile.get(i).equals(coffeePostsFromNYC.get(i))) {
+		// System.err.println("==== [Post " + Integer.toString(i)
+		// + " does not match] ==== ");
+		// System.err.print("[BEFORE] " + postsFromJSONFile.get(i));
+		// System.err.print("[AFTER] " + coffeePostsFromNYC.get(i));
+		// }
+		// }
+
 		System.out.println("++++ End of Program ++++");
 	}
 
@@ -96,8 +113,8 @@ public class FBSearch {
 		ArrayList<FBPost> posts = new ArrayList<FBPost>();
 
 		// a few safety parameters so we don't download all of facebook
-		int maxPlaceCount = 1000;
-		int maxPostCountPerPlace = 500;
+		int maxPlaceCount = 100;
+		int maxPostCountPerPlace = 50;
 
 		// run search on facebook
 		ResponseList<Place> results = facebook.searchPlaces(keyword, loc, dist);
@@ -109,16 +126,18 @@ public class FBSearch {
 
 			int postCount = 0;
 			for (Post post : feed) {
-				FBPost localPost = new FBPost(); 
-				
+				FBPost localPost = new FBPost();
+
 				localPost.setMessage(post.getMessage());
 				localPost.setLikeCount(post.getLikes().size());
-				localPost.setShareCount(post.getSharesCount());
-				//localPost.setDate(post.getCreatedTime());
+				if (post.getSharesCount() != null) {
+					localPost.setShareCount(post.getSharesCount());
+				}
+				// localPost.setDate(post.getCreatedTime());
 				localPost.setSource(post.getName());
-				
+
 				posts.add(localPost);
-				
+
 				postCount++;
 				if (postCount == maxPostCountPerPlace) {
 					break;
@@ -151,10 +170,10 @@ public class FBSearch {
 	private static void postsToJSONFile(ArrayList<FBPost> posts,
 			String jsonFileName) {
 		File jsonFile = new File(jsonFileName);
-		
+
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.enableDefaultTyping();
-		
+
 		try {
 			BufferedWriter jsonFileWriter = new BufferedWriter(new FileWriter(
 					jsonFile));
@@ -171,12 +190,12 @@ public class FBSearch {
 	private static ArrayList<FBPost> postsFromJSONFile(File jsonFile) {
 		ArrayList<FBPost> posts = new ArrayList<FBPost>();
 		ObjectMapper mapper = new ObjectMapper();
-		
+
 		try (BufferedReader br = new BufferedReader(new FileReader(jsonFile))) {
-		    String line;
-		    while ((line = br.readLine()) != null) {
-		    	posts.add(mapper.readValue(line, FBPost.class));
-		    }
+			String line;
+			while ((line = br.readLine()) != null) {
+				posts.add(mapper.readValue(line, FBPost.class));
+			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -184,7 +203,7 @@ public class FBSearch {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return posts;
 	}
 }

@@ -20,11 +20,15 @@ public class FBPost {
 	public FBPost(String message) {
 		this.message = message;
 		this.likeCount = -1;
+		this.setShareCount(-1);
+		this.setSource("");
 	}
 
 	public FBPost(String message, int likes) {
 		this.message = message;
 		this.likeCount = likes;
+		this.setShareCount(-1);
+		this.setSource("");
 	}
 
 	

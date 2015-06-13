@@ -1,0 +1,30 @@
+<?xml version="1.0"?><!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="test.hibernate">
+
+	<class name="json.FBPost" table="POST">
+
+		<id name="id" type="long" column="ID">
+			<generator class="native" />
+		</id>
+
+		<property name="message" type="string">
+			<column name="MESSAGE" length="500" not-null="true" />
+		</property>
+
+		<property name="likeCount" type="int">
+			<column name="LIKECOUNT" not-null="false" />
+		</property>
+
+		<property name="shareCount" type="int">
+			<column name="SHARECOUNT" not-null="false" />
+		</property>
+
+		<property name="source" type="string">
+			<column name="SOURCE" length="100" not-null="false" />
+		</property>
+
+	</class>
+</hibernate-mapping>
