@@ -15,7 +15,7 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
-public class TestPostHibernate {
+public class InsertPostsToMySQL {
 
 	private static ServiceRegistry serviceRegistry;
 	private static SessionFactory sessionFactory;
@@ -36,16 +36,12 @@ public class TestPostHibernate {
 //			Employee emp3 = new Employee(3, "test", "User2",
 //					"testUser2@sourabhsoni.com");
 			
-			FBPost post1 = new FBPost("this is post 1", 5);
-			FBPost post2 = new FBPost("this is post number 2", 7);
-			FBPost post3 = new FBPost("this is post is the third musketeer", 2);
-
 			// Create a handler to access methods
-			TestPostHibernate handler = new TestPostHibernate();
+			InsertPostsToMySQL handler = new InsertPostsToMySQL();
 			// insert records
-			handler.insert_record(post1);
-			handler.insert_record(post2);
-			handler.insert_record(post3);
+//			handler.insert_record(post1);
+//			handler.insert_record(post2);
+//			handler.insert_record(post3);
 			// Retrieve these records
 //			handler.getAllEmployees();
 			// Update a record
@@ -72,7 +68,7 @@ public class TestPostHibernate {
 			sessionFactory = cfg.buildSessionFactory(serviceRegistry);
 
 			// Create a handler to access methods
-			TestPostHibernate handler = new TestPostHibernate();
+			InsertPostsToMySQL handler = new InsertPostsToMySQL();
 
 			for (FBPost post : posts) {
 				handler.insert_record(post);

@@ -29,7 +29,7 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import sun.security.action.GetLongAction;
-import test.TestPostHibernate;
+import test.InsertPostsToMySQL;
 
 import com.google.gson.Gson;
 
@@ -85,7 +85,7 @@ public class FBSearch {
 		}
 
 		// add them to the database
-		TestPostHibernate.savePostsToDatabase(coffeePostsFromNYC);
+		InsertPostsToMySQL.savePostsToDatabase(coffeePostsFromNYC);
 
 		// save posts in json format to file
 		// String jsonFileName = "data" + File.separator + "posts.json";
