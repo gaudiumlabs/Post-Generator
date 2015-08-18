@@ -10,6 +10,7 @@ import edu.mit.jwi.item.IIndexWord;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -32,7 +33,20 @@ public class TestJIGSAW_WSD {
 	public static final String TEST_INPUT = "Bats are nocturnal creatures that fly through the night and eat insects";
 
 	public static void main(String[] args) {
+		//simpleDemo();
+		comparePOSTweetsFromCorpus();
+	}
 
+	private static void simpleDemo() {
+				System.out.println("Successfully created JIGSAW object");
+
+		runJIGSAWOnText(TEST_INPUT); // hardcore NLP
+
+		System.out.println("Finished Successfully");
+
+	}
+
+	private static void runJIGSAWOnText(String inputText){
 		/** Get a connection to Wordnet **/
 		String wnhome = System.getenv("WNHOME");
 		String path = wnhome + File.separator + "dict";
@@ -72,10 +86,10 @@ public class TestJIGSAW_WSD {
 
 		/** Create JIGSAW object and initialize **/
 		JIGSAW jigsaw = new JIGSAW(new File(TEST_PROPERTIES_FILENAME));
-		System.out.println("Successfully created JIGSAW object");
+
 		TokenGroup tg = null;
 		try {
-			tg = jigsaw.mapText(TEST_INPUT);
+			tg = jigsaw.mapText(inputText);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -99,7 +113,7 @@ public class TestJIGSAW_WSD {
 			// System.out.println("");
 
 		}
-		System.out.println("Finished Successfully");
+
 	}
 
 	private static String myGetGloss(IDictionary dict, String pos, String stem,
@@ -141,6 +155,71 @@ public class TestJIGSAW_WSD {
 			return POS.VERB;
 		default:
 			return null;
+		}
+	}
+
+	private static String  getStanfordCodeFromJIGSAWTag(String tag) {
+		switch (tag) {
+		case "n":
+			return "NN";
+		case "a":
+			return "JJ";
+		case "v":
+			return "VB";
+		default:
+			return null;
+		}
+	}
+
+	/**
+	 * Read some tagged tweets from twitter corpus and compare against JIGSAW ACCURACY
+	 */
+	private static void comparePOSTweetsFromCorpus() {
+		// read in some tweets
+		BufferedReader tweetsFileReader = null;
+		try {
+			tweetsFileReader = new BufferedReader(new FileReader(new File("data/twitter_bootstrap_corpus/gate_twitter_bootstrap_corpus.1543K.tokens")));
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		// read a few lines from the file
+		int numTweetsToRead = 10;
+		ArrayList<String> taggedTweets = new ArrayList<String>();
+		ArrayList<String> untaggedTweets = new ArrayList<String>();
+		for (int i = 0; i < numTweetsToRead; i++) {
+			String currUntaggedTweet = "";
+			try {
+				String line = tweetsFileReader.readLine();
+				taggedTweets.add(line);
+				System.out.println("tweet from file: "+line);
+				String[] tokens = line.split("\\s");
+				//System.out.print("    tokens are");
+				for (String token : tokens) {
+					//System.out.print(" "+token);
+				}
+				//System.out.println();
+				//System.out.print("new tokens are");
+				for (String token : tokens) {
+					int underscoreIndex = token.indexOf("_");
+					if (underscoreIndex >= 0) {
+						// there exists an underscore
+						String word = token.substring(0,underscoreIndex);
+						String stanfordTag = token.substring(underscoreIndex+1, token.length());
+						//System.out.print(" "+word+"+"+stanfordTag);
+						currUntaggedTweet += word + " ";
+
+					}
+				}
+				untaggedTweets.add(currUntaggedTweet);
+				runJIGSAWOnText(currUntaggedTweet);
+				System.out.println("untagged tweet: "+currUntaggedTweet);
+				//System.out.println();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
